@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat with Someone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1f1708;
+    --mustard:#e1ad2d;
+    --mustard-deep:#b9861a;
+    --honey:#f0c95a;
+    --sand:#f6e3a6;
+    --text:#fff6dc;
+    --muted:#dcc487;
+    --card:rgba(225,173,45,.09);
+    --line:rgba(225,173,45,.3);
+    --serif:'Fraunces',Georgia,serif;
+    --sans:'Nunito',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden;
+    background:radial-gradient(1000px 600px at 85% -10%,#4d3a0f 0%,transparent 60%),
+               radial-gradient(900px 600px at 0% 35%,#3a2a0a 0%,transparent 60%),var(--bg);
+    background-attachment:fixed;
+  }
+  #particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+  main,footer{position:relative;z-index:1}
+
+  /* HERO */
+  .hero{text-align:center;padding:70px 5vw 20px;max-width:880px;margin:0 auto}
+  .bubbles{width:120px;height:100px;margin:0 auto 18px;position:relative}
+  .bubble{position:absolute;border-radius:22px;display:grid;place-items:center;font-size:1.5rem;
+    box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .bubble.a{width:74px;height:56px;left:0;top:0;background:var(--mustard);animation:bob 3s infinite ease-in-out}
+  .bubble.b{width:68px;height:52px;right:0;bottom:0;background:var(--sand);animation:bob 3s infinite ease-in-out .8s}
+  .bubble.a::after,.bubble.b::after{content:"";position:absolute;bottom:-8px;width:16px;height:16px;background:inherit;
+    transform:rotate(45deg);border-radius:3px}
+  .bubble.a::after{left:14px}.bubble.b::after{right:14px}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .hero h1{font-family:var(--serif);font-size:clamp(2.1rem,5vw,3.5rem);line-height:1.15;margin-bottom:14px}
+  .hero h1 span{background:linear-gradient(90deg,var(--honey),var(--mustard));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--muted);font-size:1.15rem;max-width:620px;margin:0 auto}
+
+  section{max-width:1180px;margin:0 auto;padding:44px 5vw}
+  .sec-title{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.1rem);margin-bottom:6px}
+  .sec-sub{color:var(--muted);margin-bottom:26px}
+
+  /* CHOOSER */
+  .pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .pick div{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;
+    transition:transform .25s,background .25s}
+  .pick div:hover{transform:translateY(-4px);background:rgba(225,173,45,.17)}
+  .pick b{display:block;font-family:var(--serif);font-size:1.1rem;color:var(--honey);margin-bottom:4px}
+  .pick span{color:var(--muted);font-size:.95rem}
+
+  /* SITE CARDS */
+  .sites{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+  .site{
+    display:flex;flex-direction:column;text-decoration:none;color:var(--text);
+    border-radius:26px;padding:28px;border:1px solid var(--line);
+    background:linear-gradient(150deg,rgba(225,173,45,.2),rgba(185,134,26,.07));
+    transition:transform .25s,box-shadow .25s,border-color .25s;
+  }
+  .site:hover{transform:translateY(-8px);border-color:var(--mustard);box-shadow:0 18px 40px rgba(185,134,26,.3)}
+  .top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .ico{width:52px;height:52px;border-radius:50%;background:rgba(225,173,45,.28);display:grid;place-items:center;font-size:1.5rem;flex:none}
+  .site h3{font-family:var(--serif);font-size:1.3rem;line-height:1.2}
+  .site .domain{font-size:.82rem;color:var(--muted)}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+  .badge{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    background:rgba(225,173,45,.22);color:var(--sand);padding:4px 11px;border-radius:999px}
+  .site p.about{color:var(--text);opacity:.92;margin-bottom:14px}
+  .info{list-style:none;border-top:1px dashed var(--line);padding-top:14px;margin-bottom:18px;
+    display:grid;gap:8px;color:var(--muted);font-size:.93rem}
+  .info li b{color:var(--sand);font-weight:700}
+  .go{margin-top:auto;display:inline-flex;align-self:flex-start;align-items:center;gap:8px;font-weight:700;
+    background:var(--mustard);color:#2b1e03;padding:11px 22px;border-radius:999px;transition:background .2s,gap .2s}
+  .site:hover .go{background:var(--honey);gap:14px}
+
+  /* EXPECT */
+  .expect{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:34px}
+  .expect h3{font-family:var(--serif);font-size:1.5rem;margin-bottom:14px}
+  .expect ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 30px;list-style:none}
+  .expect li{padding-left:28px;position:relative;color:var(--muted)}
+  .expect li::before{content:"✦";position:absolute;left:0;color:var(--mustard)}
+
+  .crisis{max-width:900px;margin:10px auto 0;text-align:center;border:1px dashed var(--line);
+    border-radius:18px;padding:18px;color:var(--muted);font-size:.95rem}
+  .crisis a{color:var(--honey);font-weight:700;text-decoration:none}
+  footer{text-align:center;padding:30px 5vw 60px;color:var(--muted);font-size:.88rem}
+
+  @media(max-width:420px){.sites{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<main>
+  <div class="hero">
+    <div class="bubbles"><div class="bubble a">💛</div><div class="bubble b">🙂</div></div>
+    <h1>Prefer a human? <span>Someone is ready to listen.</span></h1>
+    <p>Talk to a trained listener, counsellor or therapist. Pick the service that fits you, and you can always try another.</p>
+  </div>
+
+  <section>
+    <h2 class="sec-title">Not sure where to start?</h2>
+    <p class="sec-sub">A quick guide to choosing.</p>
+    <div class="pick">
+      <div><b>I just need to vent</b><span>Try a peer listener service like 7 Cups, or a free helpline.</span></div>
+      <div><b>I want a counsellor</b><span>iCall, YourDOST and Tele-MANAS connect you with trained professionals.</span></div>
+      <div><b>I want ongoing therapy</b><span>Amaha offers scheduled sessions with licensed therapists (paid).</span></div>
+      <div><b>I'd rather talk in my language</b><span>Tele-MANAS supports many Indian languages.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">Services you can reach out to</h2>
+    <p class="sec-sub">Click a card to open the website in a new tab.</p>
+    <div class="sites">
+
+      <a class="site" href="https://telemanas.mohfw.gov.in" target="_blank" rel="noopener noreferrer">
+        <div class="top"><div class="ico">🏛️</div><div><h3>Tele-MANAS</h3><span class="domain">telemanas.mohfw.gov.in</span></div></div>
+        <div class="badges"><span class="badge">Free</span><span class="badge">Government</span><span class="badge">Phone</span></div>
+        <p class="about">India's national tele-mental-health programme. Trained counsellors offer support for stress, anxiety, low mood and emotional crises, and can refer you onward to a specialist if needed.</p>
+        <ul class="info">
+          <li><b>How to reach:</b> call 14416 or 1800-891-4416</li>
+          <li><b>Availability:</b> 24×7, toll-free</li>
+          <li><b>Languages:</b> many Indian languages</li>
+          <li><b>Best for:</b> anyone who wants a free, confidential first conversation</li>
+        </ul>
+        <span class="go">Visit website →</span>
+      </a>
+
+      <a class="site" href="https://www.icallhelpline.org" target="_blank" rel="noopener noreferrer">
+        <div class="top"><div class="ico">💬</div><div><h3>iCall</h3><span class="domain">icallhelpline.org</span></div></div>
+        <div class="badges"><span class="badge">Phone</span><span class="badge">Email</span><span class="badge">Chat</span></div>
+        <p class="about">A psychosocial helpline run by the Tata Institute of Social Sciences. Trained mental health professionals offer counselling on relationships, stress, loneliness and other life difficulties.</p>
+        <ul class="info">
+          <li><b>How to reach:</b> phone, email and chat (see site for current hours and number)</li>
+          <li><b>Cost:</b> the helpline is free; check the site for any paid options</li>
+          <li><b>Languages:</b> English, Hindi and several regional languages</li>
+          <li><b>Best for:</b> talking things through with a qualified counsellor</li>
+        </ul>
+        <span class="go">Visit website →</span>
+      </a>
+
+      <a class="site" href="https://www.vandrevalafoundation.com" target="_blank" rel="noopener noreferrer">
+        <div class="top"><div class="ico">🤝</div><div><h3>Vandrevala Foundation</h3><span class="domain">vandrevalafoundation.com</span></div></div>
+        <div class="badges"><span class="badge">Free</span><span class="badge">24×7</span><span class="badge">Call / WhatsApp</span></div>
+        <p class="about">A nonprofit offering round-the-clock counselling for people in emotional distress, including those having thoughts of self-harm. Counsellors listen without judgment.</p>
+        <ul class="info">
+          <li><b>How to reach:</b> call 9999 666 555 or use the options on the website</li>
+          <li><b>Availability:</b> any time of day or night</li>
+          <li><b>Languages:</b> English, Hindi and some regional languages</li>
+          <li><b>Best for:</b> talking at odd hours when you can't wait</li>
+        </ul>
+        <span class="go">Visit website →</span>
+      </a>
+
+      <a class="site" href="https://yourdost.com" target="_blank" rel="noopener noreferrer">
+        <div class="top"><div class="ico">🧑‍🤝‍🧑</div><div><h3>YourDOST</h3><span class="domain">yourdost.com</span></div></div>
+        <div class="badges"><span class="badge">Online chat</span><span class="badge">Video</span><span class="badge">Paid &amp; free options</span></div>
+        <p class="about">An online counselling platform that connects you with psychologists, coaches and experts. Popular with students and young professionals dealing with exam stress, career worries and relationships.</p>
+        <ul class="info">
+          <li><b>How to reach:</b> sign up on the website and pick an expert</li>
+          <li><b>Cost:</b> some sessions are paid; pricing is shown on the site</li>
+          <li><b>Languages:</b> English and Hindi, others vary</li>
+          <li><b>Best for:</b> students and working professionals</li>
+        </ul>
+        <span class="go">Visit website →</span>
+      </a>
+
+      <a class="site" href="https://www.7cups.com" target="_blank" rel="noopener noreferrer">
+        <div class="top"><div class="ico">☕</div><div><h3>7 Cups</h3><span class="domain">7cups.com</span></div></div>
+        <div class="badges"><span class="badge">Free chat</span><span class="badge">Peer listeners</span><span class="badge">Anonymous</span></div>
+        <p class="about">An online emotional-support community where trained volunteer listeners chat with you for free. It is peer support, not therapy, which makes it a gentle place to start when you just want to be heard.</p>
+        <ul class="info">
+          <li><b>How to reach:</b> create a free account and start a chat</li>
+          <li><b>Cost:</b> free listener chat; paid therapy is also offered</li>
+          <li><b>Languages:</b> mostly English</li>
+          <li><b>Note:</b> not a crisis service. If you're in danger, call 112 instead</li>
+        </ul>
+        <span class="go">Visit website →</span>
+      </a>
+
+      <a class="site" href="https://www.amahahealth.com" target="_blank" rel="noopener noreferrer">
+        <div class="top"><div class="ico">🌿</div><div><h3>Amaha</h3><span class="domain">amahahealth.com</span></div></div>
+        <div class="badges"><span class="badge">Therapy</span><span class="badge">Psychiatry</span><span class="badge">Paid</span></div>
+        <p class="about">A mental healthcare provider (formerly InnerHour) offering sessions with licensed therapists and psychiatrists, online and at clinics in some cities. Suited to ongoing care rather than a one-off chat.</p>
+        <ul class="info">
+          <li><b>How to reach:</b> book a session through the website or app</li>
+          <li><b>Cost:</b> paid; fees are listed when booking</li>
+          <li><b>Format:</b> video or in-person sessions</li>
+          <li><b>Best for:</b> structured therapy over weeks or months</li>
+        </ul>
+        <span class="go">Visit website →</span>
+      </a>
+
+      <a class="site" href="https://www.snehaindia.org" target="_blank" rel="noopener noreferrer">
+        <div class="top"><div class="ico">🌱</div><div><h3>Sneha India</h3><span class="domain">snehaindia.org</span></div></div>
+        <div class="badges"><span class="badge">Free</span><span class="badge">Tamil Nadu</span><span class="badge">Phone &amp; email</span></div>
+        <p class="about">A Chennai-based suicide prevention and emotional support centre. Trained volunteers offer a confidential, non-judgmental space to talk, and the team can also guide you to other help in Tamil Nadu.</p>
+        <ul class="info">
+          <li><b>How to reach:</b> call 044-2464 0050 or 044-2464 0060, or use the contact details on the site</li>
+          <li><b>Languages:</b> Tamil and English</li>
+          <li><b>Best for:</b> people in Tamil Nadu who want to speak locally</li>
+        </ul>
+        <span class="go">Visit website →</span>
+      </a>
+
+      <a class="site" href="https://www.wysa.com" target="_blank" rel="noopener noreferrer">
+        <div class="top"><div class="ico">🐧</div><div><h3>Wysa</h3><span class="domain">wysa.com</span></div></div>
+        <div class="badges"><span class="badge">Chat app</span><span class="badge">AI + coaches</span><span class="badge">Free &amp; paid</span></div>
+        <p class="about">A mental wellbeing app that starts with an AI chat companion and can connect you to human coaches and therapists. Helpful for building coping skills between conversations with people.</p>
+        <ul class="info">
+          <li><b>How to reach:</b> download the app or use the website</li>
+          <li><b>Cost:</b> basic features are free; human sessions are paid</li>
+          <li><b>Note:</b> the chat bot is not a replacement for a human in a crisis</li>
+          <li><b>Best for:</b> daily support and self-help tools</li>
+        </ul>
+        <span class="go">Visit website →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="expect">
+      <h3>What to expect when you reach out</h3>
+      <ul>
+        <li>You don't need the right words. "I'm not feeling okay" is enough to begin.</li>
+        <li>Most services are confidential, but ask how your information is handled.</li>
+        <li>You can end the conversation whenever you want.</li>
+        <li>If it doesn't feel like a fit, try a different person or service.</li>
+        <li>Wait times can vary. Helplines may take a few tries to connect.</li>
+        <li>Asking for help is a strong thing to do.</li>
+      </ul>
+    </div>
+    <div class="crisis" style="margin-top:22px">
+      In danger or thinking about ending your life? Please call <a href="tel:112">112</a> or <a href="tel:14416">Tele-MANAS 14416</a> right now.
+    </div>
+  </section>
+</main>
+
+<footer>Service details such as numbers, hours and prices can change. Please confirm them on each website before you rely on them. This page is a support resource, not a substitute for emergency or professional care.</footer>
+
+<script>
+(function(){
+  const c=document.getElementById('particles'),x=c.getContext('2d');
+  let W,H,P=[],mouse={x:-999,y:-999};
+  const colors=['225,173,45','240,201,90','246,227,166','185,134,26'];
+  function make(rand){
+    return{x:Math.random()*W,y:rand?Math.random()*H:H+20,
+      r:Math.random()*2.8+.8,vy:-(Math.random()*.45+.15),vx:(Math.random()-.5)*.3,
+      a:Math.random()*.4+.25,col:colors[Math.floor(Math.random()*colors.length)],ph:Math.random()*6.28};
+  }
+  function size(){W=c.width=innerWidth;H=c.height=innerHeight;
+    P=Array.from({length:Math.min(95,Math.floor(W*H/15000))},()=>make(true));}
+  addEventListener('resize',size);
+  addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+  addEventListener('touchmove',e=>{mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY},{passive:true});
+  function frame(){
+    x.clearRect(0,0,W,H);
+    for(const p of P){
+      p.ph+=.02;p.x+=p.vx+Math.sin(p.ph)*.3;p.y+=p.vy;
+      const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.hypot(dx,dy);
+      if(d<110&&d>0){p.x+=dx/d*1.4;p.y+=dy/d*1.4}
+      if(p.y<-20||p.x<-20||p.x>W+20)Object.assign(p,make(false));
+      const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*6);
+      g.addColorStop(0,`rgba(${p.col},${p.a})`);g.addColorStop(1,`rgba(${p.col},0)`);
+      x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,p.r*6,0,6.28);x.fill();
+      x.fillStyle=`rgba(255,246,220,${p.a})`;x.beginPath();x.arc(p.x,p.y,p.r*.6,0,6.28);x.fill();
+    }
+    for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){
+      const a=P[i],b=P[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<90){x.strokeStyle=`rgba(225,173,45,${.16*(1-d/90)})`;x.lineWidth=1;
+        x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}
+    }
+    requestAnimationFrame(frame);
+  }
+  size();
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

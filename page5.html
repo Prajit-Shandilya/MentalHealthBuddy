@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Mental Health Buddy</title>
+    <style>
+        :root {
+            --bg-color: #f7fafc;
+            --surface-color: #ffffff;
+            --primary: #4a7c59;
+            --primary-light: #eaf3ed;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --warning-bg: #fffaf0;
+            --warning-border: #feebc8;
+            --warning-text: #7b341e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Disclaimer Styling */
+        .disclaimer-card {
+            background-color: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            color: var(--warning-text);
+            border-left: 5px solid #dd6b20;
+        }
+
+        .disclaimer-card h2 {
+            color: var(--warning-text);
+            font-size: 1.2rem;
+        }
+
+        /* Team Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .team-member {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(74, 124, 89, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Mental Health Buddy</h1>
+            <p>A supportive initiative built with purpose and empathy.</p>
+        </header>
+
+        <!-- Mission / Story -->
+        <section class="card">
+            <h2>Our Story</h2>
+            <p>
+                <strong>Mental Health Buddy</strong> began as a collaborative English group project. We set out to build a platform guided by a simple, shared intention: to create something in the right direction that promotes empathy, open dialogue, and everyday wellness support.
+            </p>
+            <p>
+                This space represents our first step toward that goal. While simple today, we are actively continuing our work to expand features, refine resources, and develop a comprehensive, meaningful companion for anyone navigating life's everyday pressures.
+            </p>
+        </section>
+
+        <!-- Disclaimer -->
+        <section class="card disclaimer-card">
+            <h2>Important Note</h2>
+            <p>
+                <strong>Mental Health Buddy is not an alternative to professional medical care, diagnosis, or clinical therapy.</strong> 
+            </p>
+            <p>
+                If you or someone you know is experiencing acute emotional distress or a mental health emergency, please seek support from a certified counselor, therapist, or local emergency helpline immediately.
+            </p>
+        </section>
+
+        <!-- Team -->
+        <section class="card">
+            <h2>Meet the Creators</h2>
+            <p>Developed with care by our project team:</p>
+            
+            <div class="team-grid">
+                <div class="team-member">Aaradhya</div>
+                <div class="team-member">Aaroh</div>
+                <div class="team-member">Abhijay</div>
+                <div class="team-member">Devansh</div>
+                <div class="team-member">Himakshi</div>
+                <div class="team-member">Prajit</div>
+                <div class="team-member">Sanvi</div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; Mental Health Buddy. Built with right intention.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

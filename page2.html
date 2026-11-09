@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Know more about your problem</title>
+<style>
+:root{color-scheme:dark;--bg:#06160f;--surface:#0e2a1d;--text:#e8f7ee;--muted:#8fb9a2;--border:#1e4a33;--accent:#4ade80;--accent-soft:#12372a;--hack:#0b2f20;--hack-b:#237a4b}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6;background:radial-gradient(1200px 600px at 10% -10%,#0f3d28 0%,transparent 60%),radial-gradient(900px 500px at 100% 0%,#0a3a2f 0%,transparent 55%),var(--bg);background-attachment:fixed;overflow-x:hidden}
+main{max-width:920px;margin:0 auto;padding:28px 18px 60px;position:relative;z-index:1}
+h1{font-size:clamp(1.6rem,4vw,2.2rem);margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:0 0 26px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--surface),#0a2217);border:1px solid var(--border);border-radius:16px;padding:18px;text-align:left;cursor:pointer;font:inherit;color:inherit;transition:transform .15s,border-color .15s,box-shadow .15s;animation:pop .5s both;animation-delay:var(--d,0s)}
+.card:hover,.card:focus-visible{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 26px rgba(74,222,128,.22);outline:none}
+.card::after{content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.25),transparent 70%);transition:transform .3s}
+.card:hover::after{transform:scale(2.2)}
+.ico{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:16px;background:var(--accent-soft);border:1px solid var(--border);font-size:1.7rem;margin-bottom:8px;animation:bob 3s ease-in-out infinite;animation-delay:var(--d,0s)}
+.card b{display:block;font-size:1.05rem;margin-bottom:4px}
+.card span.d{color:var(--muted);font-size:.9rem}
+.more{margin-top:12px;color:var(--accent);font-size:.85rem;font-weight:600;transition:transform .2s}
+.card:hover .more{transform:translateX(6px)}
+.back{background:var(--accent-soft);color:var(--accent);border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer;margin-bottom:18px;transition:transform .15s}
+.back:hover{transform:translateX(-4px)}
+.head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.head .ico{width:64px;height:64px;font-size:2.2rem;margin:0}
+.head h2{margin:0;font-size:1.6rem}
+.article{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;animation:pop .4s both;box-shadow:0 0 0 1px rgba(74,222,128,.05),0 10px 30px rgba(0,0,0,.25)}
+.article h3{margin:20px 0 8px;font-size:1.1rem;color:var(--accent)}
+.article h3:first-child{margin-top:0}
+.article p{margin:0 0 10px}
+.article ul{list-style:none;padding:0;margin:0}
+.article li{background:var(--hack);border:1px solid var(--hack-b);border-radius:12px;padding:10px 14px;margin-bottom:8px;animation:pop .4s both;transition:transform .15s,border-color .15s}
+.article li:hover{transform:translateX(4px);border-color:var(--accent)}
+.article ul.plain li{background:none;border:0;padding:0 0 0 18px;position:relative;margin-bottom:4px}
+.article ul.plain li::before{content:"•";position:absolute;left:4px;color:var(--accent)}
+.article ul.plain li:hover{transform:none}
+details{background:var(--hack);border:1px solid var(--hack-b);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+summary{cursor:pointer;font-weight:600}
+details p{margin:8px 0 0;color:var(--text)}
+.note{color:var(--muted);font-size:.85rem;margin-top:14px}
+.hidden{display:none}
+.blobs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.blobs i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;animation:drift 14s ease-in-out infinite}
+.blobs i:nth-child(1){width:260px;height:260px;background:#22c55e;left:-60px;top:12%}
+.blobs i:nth-child(2){width:220px;height:220px;background:#14b8a6;right:-50px;top:45%;animation-delay:-5s}
+.blobs i:nth-child(3){width:200px;height:200px;background:#a3e635;left:35%;bottom:-80px;opacity:.2;animation-delay:-9s}
+.blobs span{position:absolute;font-size:1.6rem;opacity:.5;animation:rise 12s linear infinite}
+.blobs span:nth-of-type(1){left:8%}
+.blobs span:nth-of-type(2){left:30%;animation-delay:-4s}
+.blobs span:nth-of-type(3){left:58%;animation-delay:-8s}
+.blobs span:nth-of-type(4){left:84%;animation-delay:-2s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.15)}}
+@keyframes rise{0%{transform:translateY(105vh) rotate(0);opacity:0}15%{opacity:.5}85%{opacity:.5}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes wave{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(14deg)}}
+@keyframes shine{to{background-position:200% center}}
+h1 .hl{background:linear-gradient(90deg,#4ade80,#a3e635,#2dd4bf,#4ade80);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite}
+h1 .wv{display:inline-block;animation:wave 2.4s ease-in-out infinite;transform-origin:70% 80%}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="blobs" aria-hidden="true"><i></i><i></i><i></i><span>🍃</span><span>🌿</span><span>🍀</span><span>🌱</span></div>
+<main>
+  <section id="list">
+    <h1>Know more about your <span class="hl">problem</span> <span class="wv">🌿</span></h1>
+    <p class="sub">Pick what sounds most like you. Tap a card to understand it and get quick hacks to handle it.</p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="detail" class="hidden">
+    <button class="back" id="back">← Back to all problems</button>
+    <div class="head"><span class="ico" id="dIco"></span><h2 id="dTitle"></h2></div>
+    <div class="article" id="dBody"></div>
+    <h3 style="color:var(--accent);margin:22px 0 10px;font-size:1.1rem">Common questions</h3>
+    <div id="faq"></div>
+    <p class="note">General guidance only, not a substitute for professional advice. If it’s affecting your daily life, consider talking to a professional.</p>
+  </section>
+</main>
+
+<script>
+const PROBLEMS=[
+{i:"😰",t:"Stress",d:"Feeling overwhelmed and tense",
+ what:"Stress is your body’s reaction to pressure or demands it feels it can’t easily meet. A little can sharpen you, but when it stays high it leaves you tense, irritable and worn out.",
+ why:["Too many demands with too little time or control","Poor sleep, skipped meals and little movement","Constant worry about things you can’t change right now"],
+ hacks:[["Breathe slowly","Inhale for 4 seconds, exhale for 6, and repeat for 2 minutes."],["Brain-dump it","Write every worry on paper so your mind stops juggling them."],["Pick one thing","Choose the single most important task and do only that for 10 minutes."],["Move your body","Walk or stretch for 5 minutes to burn off tension."],["Drop your shoulders","Unclench your jaw and relax your shoulders, then notice the difference."],["Splash cold water","Rinse your face or wrists to calm your nervous system quickly."]],
+ help:"If stress lasts for weeks, disrupts sleep or appetite, or you feel unable to cope, talk to a doctor or counsellor.",
+ faq:[["Is all stress bad?","No. Short bursts help you perform and focus. It becomes a problem when it is constant and you never get to recover."],["Why do I feel it in my body?","Stress releases hormones like adrenaline and cortisol, which raise your heart rate and tense your muscles."],["What’s the fastest way to calm down?","Slow breathing with a longer exhale than inhale usually works within a couple of minutes."]]},
+{i:"😴",t:"Poor sleep",d:"Trouble falling or staying asleep",
+ what:"Poor sleep means struggling to fall asleep, waking often, or waking up unrefreshed. Over time it affects mood, memory and energy.",
+ why:["Screens and bright light late at night","Irregular sleep times and caffeine in the afternoon","A busy mind or stress that switches on at bedtime"],
+ hacks:[["Fix your wake time","Get up at the same time every day, even on weekends."],["Dim the lights","Lower lights and put screens away 30 minutes before bed."],["Cut late caffeine","Skip tea, coffee and energy drinks after early afternoon."],["Write tomorrow’s list","Jot down tomorrow’s tasks so your mind can let go."],["Cool the room","Keep the bedroom cool, dark and quiet."],["Get out of bed","If awake for 20 minutes, sit somewhere dim and read until sleepy."]],
+ help:"If sleep trouble lasts more than a few weeks, or you snore heavily, gasp at night or feel exhausted all day, see a doctor.",
+ faq:[["How many hours do I need?","Most adults do best with 7 to 9 hours, though needs vary a little by person."],["Is a nap okay?","Short naps of 20 minutes early in the day are fine. Late or long naps can make night sleep harder."],["Why do I wake up at 3 am?","Stress, alcohol, noise or light are common causes. Keeping a steady routine often helps."]]},
+{i:"⏳",t:"Procrastination",d:"Putting things off again and again",
+ what:"Procrastination is delaying a task you know you should do, even though the delay makes things worse. It is usually about managing uncomfortable feelings, not laziness.",
+ why:["The task feels big, boring or unclear","Fear of failing or not doing it perfectly","Distractions are easier and give instant reward"],
+ hacks:[["Start for 5 minutes","Promise yourself just 5 minutes; starting is the hardest part."],["Shrink the task","Break it into the smallest next step, like opening the document."],["Remove distractions","Put your phone in another room before you begin."],["Set a mini deadline","Pick a time today and tell someone you will finish by then."],["Do the ugly draft","Allow yourself to do it badly first and fix it later."],["Reward yourself","Plan a small treat right after you finish."]],
+ help:"If constant delay is hurting your work, studies or mood, or may be linked to ADHD, anxiety or depression, speak to a professional.",
+ faq:[["Am I just lazy?","Usually not. Procrastination is more often avoidance of stress, fear or confusion about where to start."],["Why do I work well only at the last minute?","Deadline pressure creates urgency, but it also raises stress and lowers quality. Mini deadlines can give you the same push earlier."],["What if I don’t know where to begin?","Write down the very first physical action, such as opening the file, and do only that."]]},
+{i:"🎯",t:"Low focus",d:"Mind wandering, easily distracted",
+ what:"Low focus is difficulty keeping your attention on one thing, so your mind drifts or you keep switching tasks. It makes everything take longer and feel harder.",
+ why:["Constant notifications and multitasking","Not enough sleep, food or water","Tasks that are unclear or too long without breaks"],
+ hacks:[["Use 25-minute sprints","Work for 25 minutes, then rest for 5."],["Silence notifications","Turn off alerts or use Do Not Disturb while working."],["Clear your desk","Keep only what you need for the current task in view."],["Single-task","Close extra tabs and apps so only one thing is open."],["Park stray thoughts","Keep a notepad for distracting thoughts and return to them later."],["Drink water and stretch","A quick reset can bring your attention back."]],
+ help:"If focus problems are lifelong, affect daily life, or come with memory trouble or low mood, consider seeing a doctor.",
+ faq:[["Does music help?","For many people, calm instrumental music or white noise helps. Songs with lyrics can distract during reading or writing."],["Why can’t I focus after scrolling?","Fast, short content trains your brain to expect constant novelty, which makes slower tasks feel dull."],["How long can I focus?","Most people manage 20 to 50 minutes at a time. Short breaks help you do it again."]]},
+{i:"😟",t:"Anxiety",d:"Constant worry and racing thoughts",
+ what:"Anxiety is persistent worry or fear, often about things that might happen. It can cause a racing heart, restlessness and a mind that won’t switch off.",
+ why:["Your brain overestimates threats and underestimates your ability to cope","Stress, poor sleep and too much caffeine","Uncertainty and trying to control everything"],
+ hacks:[["Name the feeling","Say “this is anxiety” to create a little distance from it."],["Try 5-4-3-2-1","Notice 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste."],["Slow your exhale","Breathe out longer than you breathe in for a minute or two."],["Set a worry time","Give yourself 10 minutes later to worry, then postpone it until then."],["Ask what you can control","Act on what you can, and let go of what you can’t."],["Go for a walk","Gentle movement burns off nervous energy."]],
+ help:"If worry is constant, causes panic attacks, avoidance, or stops you doing normal activities, please see a doctor or therapist. Effective treatment exists.",
+ faq:[["Is anxiety the same as stress?","Stress is a response to a real pressure and usually fades. Anxiety can continue even when the pressure is gone."],["Can it cause physical symptoms?","Yes, such as a fast heartbeat, tight chest, sweating and stomach upset. If you are unsure, get checked by a doctor."],["Does caffeine make it worse?","It can. Cutting back often reduces jitteriness and racing thoughts."]]},
+{i:"🔥",t:"Burnout",d:"Drained, exhausted, detached",
+ what:"Burnout is deep exhaustion from long-term stress, usually linked to work or caregiving. You may feel drained, cynical and less effective than before.",
+ why:["Heavy workload with little rest or recognition","Lack of control or unclear expectations","Never fully switching off"],
+ hacks:[["Take real breaks","Step away from your desk and screen at lunch."],["Set a stop time","Decide when work ends and honour it."],["Say no to one thing","Drop or delay one commitment this week."],["Protect one joy","Schedule something you enjoy that has nothing to do with productivity."],["Sleep first","Prioritise rest before pushing harder."],["Talk to someone","Share how you feel with a friend, colleague or manager."]],
+ help:"If exhaustion lasts for weeks, you feel hopeless, or you can’t function at work or home, speak to a doctor or mental health professional.",
+ faq:[["How is burnout different from tiredness?","Tiredness improves with rest. Burnout lingers and comes with detachment and feeling ineffective."],["Do I need a holiday?","A break helps, but lasting change usually needs changes to workload, boundaries and recovery habits."],["Can I recover while working?","Yes, often through smaller loads, firm boundaries and regular rest, though some people need time off."]]},
+{i:"📱",t:"Screen addiction",d:"Can’t stop scrolling",
+ what:"Screen addiction is a pattern of compulsive phone or social media use that is hard to control and gets in the way of life. Apps are built to keep you scrolling.",
+ why:["Endless feeds and notifications give unpredictable rewards","Boredom, stress or loneliness push you to escape","Your phone is always within reach"],
+ hacks:[["Turn off notifications","Keep only the ones from people, not apps."],["Move the phone","Charge it outside your bedroom and away from your desk."],["Use grayscale","Switch your screen to black and white to make it less tempting."],["Set app timers","Limit your most-used apps to a daily amount."],["Pause before opening","Take one breath and ask what you actually want."],["Swap the habit","Keep a book or a stretch routine ready for those moments."]],
+ help:"If screen time hurts your sleep, work, relationships or mood and you can’t cut back, consider speaking to a counsellor.",
+ faq:[["How much screen time is too much?","There is no single number. It becomes a concern when it replaces sleep, activity, work or relationships."],["Why do I pick up my phone without thinking?","It becomes a habit triggered by boredom or discomfort. Adding small obstacles breaks the loop."],["Should I delete social apps?","It can help. Many people do well by logging in only from a computer or setting strict limits."]]},
+{i:"🪫",t:"Low motivation",d:"No energy to start or continue",
+ what:"Low motivation is feeling unable to get started or keep going, even on things you care about. It often comes from tiredness, stress or unclear goals.",
+ why:["Low energy from poor sleep, food or activity","Goals that feel too big or not meaningful","Stress, burnout or low mood"],
+ hacks:[["Act first","Motivation often follows action, so start before you feel ready."],["Make it tiny","Do 2 minutes of the task, like one push-up or one sentence."],["Plan tomorrow tonight","Choose the first step so you aren’t deciding in the morning."],["Track streaks","Mark each day you do it and try not to break the chain."],["Remember your why","Write down why this matters to you."],["Get sunlight and movement","A short walk outside lifts energy."]],
+ help:"If you lose interest in almost everything for weeks, or feel hopeless or very low, please talk to a doctor or counsellor.",
+ faq:[["Why do I lose motivation halfway?","Early excitement fades. Habits, routines and small wins keep you going when the feeling is gone."],["Should I wait until I feel motivated?","No. Starting small usually creates the motivation."],["Could it be something more serious?","Persistent loss of interest and energy can be a sign of depression, so seek help if it lasts."]]},
+{i:"😔",t:"Loneliness",d:"Feeling disconnected from others",
+ what:"Loneliness is the painful feeling that your connections are fewer or less close than you want. You can feel it even when surrounded by people.",
+ why:["Moving, new jobs or changes in life","Social media comparison and fewer real conversations","Fear of rejection that makes reaching out hard"],
+ hacks:[["Send one message","Text someone you haven’t spoken to in a while."],["Say hello","Have a short chat with a neighbour, shopkeeper or colleague."],["Join something","Pick a class, club or volunteer group that meets regularly."],["Call, don’t scroll","A voice or video call feels more connecting than likes."],["Be kind to yourself","Remind yourself loneliness is common and can change."],["Spend time outside","Go to a park or café to be around people."]],
+ help:"If loneliness comes with persistent sadness, hopelessness or thoughts of self-harm, reach out to a doctor, a counsellor or a local helpline right away.",
+ faq:[["Is being alone the same as loneliness?","No. Solitude can be peaceful. Loneliness is the distress of wanting more connection."],["Why is it hard to reach out?","Fear of rejection is common, but most people welcome contact more than we expect."],["How do I make friends as an adult?","Regular, repeated activities such as clubs, classes or volunteering build familiarity over time."]]},
+{i:"🪞",t:"Low confidence",d:"Self-doubt holding you back",
+ what:"Low confidence means doubting your abilities or worth, which can stop you trying new things. It is a pattern of thinking and can be changed with practice.",
+ why:["Harsh self-criticism or past setbacks","Comparing yourself with others’ highlights","Avoiding challenges, so you never prove yourself wrong"],
+ hacks:[["Keep a wins list","Write down 3 things you did well each day."],["Talk to yourself kindly","Speak to yourself like you would to a good friend."],["Take a small risk","Do one slightly uncomfortable thing today."],["Stand tall","Straighten your posture and breathe; it shifts how you feel."],["Limit comparison","Mute accounts that make you feel worse about yourself."],["Learn a skill","Practise something small until you see progress."]],
+ help:"If self-doubt is constant, comes with low mood or anxiety, or stops you doing daily things, a counsellor or therapist can help.",
+ faq:[["Can confidence be built?","Yes. It grows from doing things, handling mistakes and noticing progress, not from waiting to feel ready."],["Why do I doubt myself so much?","Past experiences, criticism and comparison can train your mind to expect failure. These patterns can be unlearned."],["What if I fail?","Failure is part of learning. Treat it as information and try again with adjustments."]]}
+];
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+const grid=$("grid");
+PROBLEMS.forEach((p,n)=>{
+  const b=document.createElement("button");
+  b.className="card";
+  b.innerHTML='<span class="ico">'+p.i+'</span><b>'+esc(p.t)+'</b><span class="d">'+esc(p.d)+'</span><div class="more">Learn more →</div>';
+  b.style.setProperty("--d",(n*0.06)+"s");
+  b.onclick=()=>openProblem(p);
+  grid.appendChild(b);
+});
+
+function openProblem(p){
+  $("list").classList.add("hidden");
+  $("detail").classList.remove("hidden");
+  $("dIco").textContent=p.i;
+  $("dTitle").textContent=p.t;
+  $("dBody").innerHTML=
+    "<h3>What it is</h3><p>"+esc(p.what)+"</p>"+
+    "<h3>Why it happens</h3><ul class='plain'>"+p.why.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul>"+
+    "<h3>Quick hacks</h3><ul>"+p.hacks.map(h=>"<li><b>"+esc(h[0])+".</b> "+esc(h[1])+"</li>").join("")+"</ul>"+
+    "<h3>When to get help</h3><p>"+esc(p.help)+"</p>";
+  $("faq").innerHTML=p.faq.map(f=>"<details><summary>"+esc(f[0])+"</summary><p>"+esc(f[1])+"</p></details>").join("");
+  window.scrollTo(0,0);
+}
+$("back").onclick=()=>{
+  $("detail").classList.add("hidden");
+  $("list").classList.remove("hidden");
+  window.scrollTo(0,0);
+};
+</script>
+</body>
+</html>

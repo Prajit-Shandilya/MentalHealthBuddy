@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Manas Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --deep:#050b1f; --night:#0a1633; --indigo:#13245a; --glow:#7fb8ff; --ice:#cfe6ff; --mist:#8fa8d4; --moon:#f3f7ff;
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Nunito',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--sans);color:var(--ice);overflow:hidden;
+  background:radial-gradient(120% 90% at 80% 0%,#16306e 0%,var(--night) 45%,var(--deep) 100%);
+}
+canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+
+/* Moon */
+.moon{
+  position:fixed;top:7vh;right:9vw;width:clamp(90px,14vw,170px);aspect-ratio:1;border-radius:50%;z-index:1;
+  background:radial-gradient(circle at 35% 35%,#fff 0%,var(--moon) 40%,#c5d9f5 100%);
+  box-shadow:0 0 60px 20px rgba(127,184,255,.35),0 0 180px 80px rgba(80,140,255,.18);
+  animation:breathe 7s ease-in-out infinite;
+}
+.moon::before,.moon::after{content:"";position:absolute;border-radius:50%;background:rgba(150,175,215,.28)}
+.moon::before{width:22%;height:22%;left:24%;top:30%}
+.moon::after{width:14%;height:14%;left:58%;top:58%}
+@keyframes breathe{50%{box-shadow:0 0 80px 28px rgba(127,184,255,.45),0 0 220px 100px rgba(80,140,255,.22);transform:translateY(-4px)}}
+
+/* Layout */
+.app{position:relative;z-index:2;height:100%;max-width:760px;margin:0 auto;display:flex;flex-direction:column;
+  padding:max(20px,env(safe-area-inset-top)) 20px max(16px,env(safe-area-inset-bottom))}
+header{padding:10px 0 6px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,2.8rem);color:var(--moon);letter-spacing:.02em;
+  text-shadow:0 0 28px rgba(127,184,255,.55)}
+header p{color:var(--mist);font-size:.95rem;margin-top:2px}
+
+#chat{flex:1;overflow-y:auto;padding:18px 4px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+#chat::-webkit-scrollbar{width:6px}#chat::-webkit-scrollbar-thumb{background:rgba(127,184,255,.25);border-radius:6px}
+
+.msg{max-width:84%;padding:13px 17px;line-height:1.6;font-size:1rem;border-radius:20px;white-space:pre-wrap;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:in .5s ease both}
+.bot{align-self:flex-start;background:rgba(19,36,90,.55);border:1px solid rgba(127,184,255,.22);border-bottom-left-radius:6px;
+  box-shadow:0 6px 30px rgba(10,22,60,.5)}
+.user{align-self:flex-end;background:linear-gradient(135deg,#2f6fd6,#4a97f0);color:#fff;border-bottom-right-radius:6px}
+.greet{font-family:var(--serif);font-size:1.45rem;line-height:1.45;font-weight:500}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+
+.typing{display:flex;gap:5px;padding:16px 18px}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--glow);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+.composer{display:flex;gap:10px;align-items:flex-end;padding:10px;border-radius:26px;
+  background:rgba(10,22,51,.7);border:1px solid rgba(127,184,255,.28);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.composer:focus-within{border-color:var(--glow);box-shadow:0 0 0 3px rgba(127,184,255,.18)}
+textarea{flex:1;resize:none;max-height:140px;background:none;border:0;outline:0;color:var(--moon);font:inherit;font-size:1rem;padding:8px 10px;line-height:1.5}
+textarea::placeholder{color:var(--mist)}
+button{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;color:#fff;flex:none;
+  background:linear-gradient(135deg,#2f6fd6,#5aa6ff);transition:transform .2s,box-shadow .2s}
+button:hover{transform:scale(1.07);box-shadow:0 0 22px rgba(90,166,255,.6)}
+button:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+button:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
+button svg{width:20px;height:20px}
+.note{text-align:center;color:var(--mist);font-size:.75rem;margin-top:9px;opacity:.8}
+
+@media (max-width:600px){.moon{right:6vw;top:5vh;opacity:.85}.msg{max-width:92%}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="moon" aria-hidden="true"></div>
+
+<div class="app">
+  <header>
+    <h1>Manas Bot</h1>
+    <p>A quiet place to think out loud.</p>
+  </header>
+
+  <main id="chat" aria-live="polite"></main>
+
+  <div class="composer">
+    <textarea id="input" rows="1" placeholder="Share what's on your mind…" aria-label="Your message"></textarea>
+    <button id="send" aria-label="Send message">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+  <p class="note">Manas Bot is a reflective companion, not a substitute for professional care.</p>
+</div>
+
+<script>
+/* ============ CONFIG: paste your Gemini API key here ============ */
+const GEMINI_API_KEY = "AQ.Ab8RN6K6G7q1XNKpPmRg-HMEgwsHs6_4OzmqH41p0b3rpbe8tg";
+const MODEL = "gemini-3.5-flash";
+/* ================================================================ */
+
+const SYSTEM_PROMPT = `You are Manas Bot, a calm, warm listener. Your purpose is to listen to whatever the person shares and gently offer essential insights.
+Rules:
+- Listen first. Reflect back what you hear in your own words so the person feels understood.
+- Offer one or two gentle observations or perspectives that may help them see their situation more clearly (patterns, feelings underneath, what may matter to them).
+- NEVER give conclusions, verdicts, diagnoses, or tell them what the answer is.
+- NEVER give direct methods, step-by-step fixes, or to-do lists. Do not say "you should".
+- Close with one soft, open-ended question that invites them to explore further.
+- Keep replies short (3-6 sentences), plain, kind, in the language the person uses. No bullet points, no headings.
+- If the person mentions harming themselves or being in danger, respond with care, encourage reaching out to someone they trust or local emergency/crisis services, and stay present.`;
+
+const chat = document.getElementById('chat'),
+      input = document.getElementById('input'),
+      sendBtn = document.getElementById('send');
+let history = [];
+
+function add(text, who, extra=''){
+  const d = document.createElement('div');
+  d.className = `msg ${who} ${extra}`; d.textContent = text;
+  chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d;
+}
+function typing(){
+  const d = document.createElement('div');
+  d.className = 'msg bot typing'; d.innerHTML = '<span></span><span></span><span></span>';
+  chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d;
+}
+
+// Greeting
+setTimeout(()=>add("Good evening. I'm Manas, and I'm here to listen.\nWhat's been on your mind tonight?", 'bot', 'greet'), 500);
+
+async function send(){
+  const text = input.value.trim();
+  if(!text || sendBtn.disabled) return;
+  input.value = ''; input.style.height = 'auto';
+  add(text, 'user');
+  history.push({role:'user', parts:[{text}]});
+  sendBtn.disabled = true;
+  const t = typing();
+  try{
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_API_KEY},
+      body:JSON.stringify({
+        systemInstruction:{parts:[{text:SYSTEM_PROMPT}]},
+        contents:history,
+        generationConfig:{temperature:0.8,maxOutputTokens:400}
+      })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data?.error?.message || 'Request failed');
+    const reply = data.candidates?.[0]?.content?.parts?.map(p=>p.text).join('') || "I'm here. Could you share that once more?";
+    history.push({role:'model', parts:[{text:reply}]});
+    t.remove(); add(reply, 'bot');
+  }catch(e){
+    t.remove();
+    history.pop();
+    add("I couldn't reach the Gemini service. Check that your API key is set in the code and try again.", 'bot');
+    console.error(e);
+  }
+  sendBtn.disabled = false; input.focus();
+}
+sendBtn.onclick = send;
+input.addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); }});
+input.addEventListener('input', ()=>{ input.style.height='auto'; input.style.height=input.scrollHeight+'px'; });
+
+/* ============ Living starfield ============ */
+const cv = document.getElementById('sky'), cx = cv.getContext('2d');
+let W,H,stars=[],shoot=null;
+function resize(){
+  const r = devicePixelRatio||1; W=innerWidth; H=innerHeight;
+  cv.width=W*r; cv.height=H*r; cx.setTransform(r,0,0,r,0,0);
+  stars = Array.from({length:Math.min(220,Math.floor(W*H/6500))},()=>({
+    x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.5+.3,
+    p:Math.random()*6.28, s:Math.random()*.02+.005, d:Math.random()*.15+.02
+  }));
+}
+function frame(){
+  cx.clearRect(0,0,W,H);
+  for(const s of stars){
+    s.p += s.s; s.y -= s.d*.1; if(s.y<0) s.y=H;
+    const a = .45 + .55*Math.sin(s.p);
+    cx.beginPath(); cx.arc(s.x,s.y,s.r,0,6.28);
+    cx.fillStyle = `rgba(200,225,255,${Math.max(.1,a)})`;
+    cx.shadowColor='#9cc8ff'; cx.shadowBlur = s.r*4; cx.fill();
+  }
+  cx.shadowBlur=0;
+  if(!shoot && Math.random()<.004) shoot={x:Math.random()*W*.8,y:Math.random()*H*.35,l:0};
+  if(shoot){
+    shoot.l+=9; shoot.x+=8; shoot.y+=4;
+    const g = cx.createLinearGradient(shoot.x,shoot.y,shoot.x-90,shoot.y-45);
+    g.addColorStop(0,'rgba(220,240,255,.9)'); g.addColorStop(1,'rgba(220,240,255,0)');
+    cx.strokeStyle=g; cx.lineWidth=1.6; cx.beginPath();
+    cx.moveTo(shoot.x,shoot.y); cx.lineTo(shoot.x-90,shoot.y-45); cx.stroke();
+    if(shoot.l>260) shoot=null;
+  }
+  requestAnimationFrame(frame);
+}
+addEventListener('resize',resize); resize(); frame();
+</script>
+</body>
+</html>
