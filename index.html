@@ -1,137 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Manas Bot</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mental Health Buddy – You are not alone</title>
+<meta name="description" content="A calm place to talk, learn and find help for anxiety, low mood, stress and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --deep:#050b1f; --night:#0a1633; --indigo:#13245a; --glow:#7fb8ff; --ice:#cfe6ff; --mist:#8fa8d4; --moon:#f3f7ff;
-  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Nunito',system-ui,sans-serif;
+  --ink:#1f2a44; --ink2:#4a5675; --sky:#e9eefc; --lav:#d9d2f5; --sage:#bfe3d0; --sageD:#2f7a62;
+  --sun:#ffd88a; --coral:#ffcfc2; --coralD:#b5432c; --white:#fff; --line:rgba(31,42,68,.12);
+  --bg:#f3f5fd; --card:#fff;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{
-  font-family:var(--sans);color:var(--ice);overflow:hidden;
-  background:radial-gradient(120% 90% at 80% 0%,#16306e 0%,var(--night) 45%,var(--deep) 100%);
+@media (prefers-color-scheme: dark){
+  :root{--ink:#eef1ff; --ink2:#b8c0dc; --bg:#141a30; --card:#1e2640; --line:rgba(255,255,255,.14);
+    --sky:#1a2240; --lav:#2c2a5a; --sage:#1f4a40; --sageD:#7fd4b4; --coral:#4a2a30; --coralD:#ffab98; --sun:#ffd88a}
 }
-canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito Sans',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;font-size:17px;overflow-x:hidden}
+h1,h2,h3{font-family:'Fraunces',Georgia,'Times New Roman',serif;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sageD);outline-offset:3px;border-radius:8px}
 
-/* Moon */
-.moon{
-  position:fixed;top:7vh;right:9vw;width:clamp(90px,14vw,170px);aspect-ratio:1;border-radius:50%;z-index:1;
-  background:radial-gradient(circle at 35% 35%,#fff 0%,var(--moon) 40%,#c5d9f5 100%);
-  box-shadow:0 0 60px 20px rgba(127,184,255,.35),0 0 180px 80px rgba(80,140,255,.18);
-  animation:breathe 7s ease-in-out infinite;
+/* nav */
+nav{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px clamp(18px,5vw,64px);background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1.2rem;text-decoration:none}
+.logo svg{width:32px;height:32px}
+nav .links{display:flex;gap:22px;align-items:center;font-weight:600;font-size:.95rem}
+nav .links a{text-decoration:none;color:var(--ink2)}
+nav .links a:hover{color:var(--ink)}
+.sos{background:var(--coral);color:var(--coralD)!important;padding:8px 16px;border-radius:99px}
+@media(max-width:700px){nav .links a:not(.sos){display:none}}
+
+/* hero */
+.hero{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:32px;align-items:center;padding:clamp(40px,7vw,90px) clamp(18px,5vw,64px) 40px;min-height:82vh;background:linear-gradient(180deg,var(--sky),var(--bg));overflow:hidden}
+.hero h1{font-size:clamp(2.4rem,5.4vw,4.2rem);margin-bottom:18px}
+.hero p.lead{font-size:1.2rem;color:var(--ink2);max-width:34em;margin-bottom:28px}
+.btns{display:flex;flex-wrap:wrap;gap:14px}
+.btn{display:inline-block;padding:14px 26px;border-radius:99px;font-weight:700;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.btn.main{background:var(--sageD);color:#fff}
+@media (prefers-color-scheme: dark){.btn.main{color:#10281f}}
+.btn.ghost{border:2px solid var(--line);color:var(--ink)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(31,42,68,.15)}
+.hero .note{margin-top:22px;font-size:.92rem;color:var(--ink2)}
+
+.art{position:relative;aspect-ratio:1/1;max-width:540px;width:100%;justify-self:center}
+.art svg{width:100%;height:100%;overflow:visible}
+.ring{transform-origin:260px 220px;animation:breathe 8s ease-in-out infinite}
+.ring.r2{animation-delay:.5s}.ring.r3{animation-delay:1s}
+@keyframes breathe{0%,100%{transform:scale(.82);opacity:.55}50%{transform:scale(1.08);opacity:1}}
+.sunc{animation:glow 8s ease-in-out infinite;transform-origin:260px 220px}
+@keyframes glow{0%,100%{transform:scale(.95)}50%{transform:scale(1.06)}}
+.float{animation:float 7s ease-in-out infinite}
+.float.b{animation-duration:9s;animation-delay:-3s}.float.c{animation-duration:11s;animation-delay:-6s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-16px) rotate(6deg)}}
+.cloud{animation:drift 30s linear infinite alternate}
+.cloud.b{animation-duration:42s}
+@keyframes drift{from{transform:translateX(-24px)}to{transform:translateX(30px)}}
+.breath{position:absolute;left:0;right:0;top:46%;text-align:center;font-family:'Fraunces',Georgia,serif;font-size:1.15rem;color:#4a3d7a;pointer-events:none}
+.breath span{display:block;transition:opacity .6s}
+
+/* reassurance */
+.feel{padding:60px clamp(18px,5vw,64px) 20px;text-align:center}
+.feel h2{font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:14px}
+.feel p{max-width:42em;margin:0 auto 26px;color:var(--ink2)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:780px;margin:0 auto}
+.chips span{padding:8px 18px;border-radius:99px;background:var(--card);border:1px solid var(--line);font-weight:600;font-size:.95rem;animation:bob 6s ease-in-out infinite}
+.chips span:nth-child(2n){animation-delay:-2s}.chips span:nth-child(3n){animation-delay:-4s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* paths */
+.paths{padding:70px clamp(18px,5vw,64px) 80px;max-width:1180px;margin:0 auto}
+.paths>h2{font-size:clamp(1.8rem,3.4vw,2.6rem);text-align:center;margin-bottom:10px}
+.paths>p{text-align:center;color:var(--ink2);margin-bottom:44px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{grid-template-columns:1fr;min-height:0}.art{max-width:380px}}
+.path{position:relative;display:flex;gap:22px;align-items:center;padding:30px;border-radius:28px;text-decoration:none;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.path:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(31,42,68,.16)}
+.path .ico{flex:none;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.65)}
+@media (prefers-color-scheme: dark){.path .ico{background:rgba(255,255,255,.1)}}
+.path .ico svg{width:46px;height:46px}
+.path h3{font-size:1.4rem;margin-bottom:6px}
+.path p{font-size:.98rem;color:var(--ink2)}
+.path .go{display:inline-block;margin-top:10px;font-weight:700;font-size:.95rem}
+.path .go i{display:inline-block;font-style:normal;transition:transform .25s}
+.path:hover .go i{transform:translateX(6px)}
+.p1{background:var(--lav)}.p2{background:var(--sage)}.p3{background:var(--coral)}.p4{background:var(--sun);color:#1f2a44}
+.p4 p{color:#4a4030}
+.p3 .go{color:var(--coralD)}
+.p1:hover .ico svg{animation:wob .8s}
+@keyframes wob{25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+
+/* crisis */
+.crisis{margin:0 clamp(18px,5vw,64px) 60px;padding:28px 32px;border-radius:24px;background:var(--card);border:1px solid var(--line);display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;justify-content:space-between}
+.crisis h3{font-size:1.25rem;margin-bottom:4px}
+.crisis p{color:var(--ink2);max-width:40em;font-size:.98rem}
+.crisis a.call{font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:600;color:var(--coralD);text-decoration:none;white-space:nowrap}
+
+footer{padding:34px clamp(18px,5vw,64px) 46px;text-align:center;color:var(--ink2);font-size:.9rem;border-top:1px solid var(--line)}
+footer p{max-width:46em;margin:6px auto}
+
+/* single load reveal for hero text */
+.hero .txt>*{animation:rise .9s both}
+.hero .txt>*:nth-child(2){animation-delay:.12s}.hero .txt>*:nth-child(3){animation-delay:.24s}.hero .txt>*:nth-child(4){animation-delay:.36s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
-.moon::before,.moon::after{content:"";position:absolute;border-radius:50%;background:rgba(150,175,215,.28)}
-.moon::before{width:22%;height:22%;left:24%;top:30%}
-.moon::after{width:14%;height:14%;left:58%;top:58%}
-@keyframes breathe{50%{box-shadow:0 0 80px 28px rgba(127,184,255,.45),0 0 220px 100px rgba(80,140,255,.22);transform:translateY(-4px)}}
-
-/* Layout */
-.app{position:relative;z-index:2;height:100%;max-width:760px;margin:0 auto;display:flex;flex-direction:column;
-  padding:max(20px,env(safe-area-inset-top)) 20px max(16px,env(safe-area-inset-bottom))}
-header{padding:10px 0 6px}
-h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,2.8rem);color:var(--moon);letter-spacing:.02em;
-  text-shadow:0 0 28px rgba(127,184,255,.55)}
-header p{color:var(--mist);font-size:.95rem;margin-top:2px}
-
-.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 16px 10vh;}
-.welcome-mark{font-size:2rem;color:var(--glow);text-shadow:0 0 28px rgba(127,184,255,.9);margin-bottom:18px;animation:breathe 7s ease-in-out infinite}
-.welcome-title{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.5rem);color:var(--moon);text-shadow:0 0 24px rgba(127,184,255,.35)}
-.welcome-copy{max-width:360px;margin-top:10px;color:var(--mist);font-size:.95rem;line-height:1.7}
-#chat{flex:1;overflow-y:auto;padding:18px 4px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
-#chat::-webkit-scrollbar{width:6px}#chat::-webkit-scrollbar-thumb{background:rgba(127,184,255,.25);border-radius:6px}
-
-.msg{max-width:84%;padding:13px 17px;line-height:1.6;font-size:1rem;border-radius:20px;white-space:pre-wrap;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:in .5s ease both}
-.bot{align-self:flex-start;background:rgba(19,36,90,.55);border:1px solid rgba(127,184,255,.22);border-bottom-left-radius:6px;
-  box-shadow:0 6px 30px rgba(10,22,60,.5)}
-.user{align-self:flex-end;background:linear-gradient(135deg,#2f6fd6,#4a97f0);color:#fff;border-bottom-right-radius:6px}
-.greet{font-family:var(--serif);font-size:1.45rem;line-height:1.45;font-weight:500}
-@keyframes in{from{opacity:0;transform:translateY(8px)}}
-
-.typing{display:flex;gap:5px;padding:16px 18px}
-.typing span{width:7px;height:7px;border-radius:50%;background:var(--glow);animation:blink 1.2s infinite}
-.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
-
-.composer{display:flex;gap:10px;align-items:flex-end;padding:10px;border-radius:26px;
-  background:rgba(10,22,51,.7);border:1px solid rgba(127,184,255,.28);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.composer:focus-within{border-color:var(--glow);box-shadow:0 0 0 3px rgba(127,184,255,.18)}
-textarea{flex:1;resize:none;max-height:140px;background:none;border:0;outline:0;color:var(--moon);font:inherit;font-size:1rem;padding:8px 10px;line-height:1.5}
-textarea::placeholder{color:var(--mist)}
-button{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;color:#fff;flex:none;
-  background:linear-gradient(135deg,#2f6fd6,#5aa6ff);transition:transform .2s,box-shadow .2s}
-button:hover{transform:scale(1.07);box-shadow:0 0 22px rgba(90,166,255,.6)}
-button:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
-button:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
-button svg{width:20px;height:20px}
-.note{text-align:center;color:var(--mist);font-size:.75rem;margin-top:9px;opacity:.8}
-
-@media (max-width:600px){.moon{right:6vw;top:5vh;opacity:.85}.msg{max-width:92%}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
-<canvas id="sky"></canvas>
-<div class="moon" aria-hidden="true"></div>
 
-<div class="app">
-  <header>
-    <h1>Manas Bot</h1>
-    <p>A quiet place to think out loud.</p>
-  </header>
+<nav>
+  <a class="logo" href="index.html" aria-label="Mental Health Buddy home">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#bfe3d0"/><path d="M20 31c-7-4.5-10-8-10-12a5.5 5.5 0 0 1 10-3 5.5 5.5 0 0 1 10 3c0 4-3 7.5-10 12z" fill="#2f7a62"/></svg>
+    Mental Health Buddy
+  </a>
+  <div class="links">
+    <a href="page2.html">Learn</a>
+    <a href="page1.html">Chat with Manas</a>
+    <a href="page4.html">Talk to someone</a>
+    <a href="page5.html">About us</a>
+    <a class="sos" href="page3.html">Get help now</a>
+  </div>
+</nav>
 
-  <main class="welcome" aria-live="polite">
-    <div class="welcome-mark" aria-hidden="true">✦</div>
-    <p class="welcome-title">A moment for yourself.</p>
-    <p class="welcome-copy">Whenever you're ready, open the chat and share what's on your mind.</p>
-  </main>
+<header class="hero">
+  <div class="txt">
+    <h1>Welcome to Mental Health Buddy. You are not alone.</h1>
+    <p class="lead">Whatever you are carrying today, whether it is worry, sadness, exhaustion or a feeling you can’t name, this is a safe, judgment-free place to pause, talk and find your next small step.</p>
+    <div class="btns">
+      <a class="btn main" href="#paths">Find support</a>
+      <a class="btn ghost" href="page1.html">Talk to Manas</a>
+    </div>
+    <p class="note">Free, private and open any time of day.</p>
+  </div>
 
-  <p class="note">Manas Bot is a reflective companion, not a substitute for professional care.</p>
-</div>
+  <div class="art" aria-hidden="true">
+    <svg viewBox="0 0 520 520">
+      <defs>
+        <radialGradient id="orb" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#fff3cf"/><stop offset="1" stop-color="#ffd88a"/></radialGradient>
+        <linearGradient id="h1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd8c0"/><stop offset="1" stop-color="#6fbfa0"/></linearGradient>
+        <linearGradient id="h2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7bc4a6"/><stop offset="1" stop-color="#2f7a62"/></linearGradient>
+      </defs>
+      <circle class="ring r3" cx="260" cy="220" r="205" fill="#d9d2f5" opacity=".45"/>
+      <circle class="ring r2" cx="260" cy="220" r="160" fill="#c8bdf0" opacity=".6"/>
+      <circle class="ring" cx="260" cy="220" r="118" fill="#b7a9ec" opacity=".75"/>
+      <g class="sunc"><circle cx="260" cy="220" r="78" fill="url(#orb)"/></g>
+      <g class="cloud" fill="#fff" opacity=".9"><ellipse cx="90" cy="110" rx="48" ry="16"/><ellipse cx="118" cy="98" rx="30" ry="16"/></g>
+      <g class="cloud b" fill="#fff" opacity=".8"><ellipse cx="440" cy="170" rx="42" ry="13"/><ellipse cx="420" cy="160" rx="26" ry="13"/></g>
+      <path d="M0 400 Q130 320 260 380 T520 350 V520 H0Z" fill="url(#h1)"/>
+      <path d="M0 450 Q150 390 290 440 T520 420 V520 H0Z" fill="url(#h2)"/>
+      <!-- sitting figure -->
+      <g transform="translate(228 372)">
+        <circle cx="32" cy="14" r="14" fill="#f5c9a8"/>
+        <path d="M14 14a18 16 0 0 1 36 0c-6-6-30-6-36 0z" fill="#4a3d7a"/>
+        <path d="M10 70c0-26 8-40 22-40s22 14 22 40z" fill="#ffd88a"/>
+        <path d="M2 74c14-8 46-8 60 0" stroke="#1f2a44" stroke-width="4" fill="none" stroke-linecap="round" opacity=".25"/>
+      </g>
+      <g class="float" transform="translate(70 300)"><path d="M0 20C0 6 14-2 28 0c0 14-8 26-28 20z" fill="#7bc4a6"/><path d="M0 20L22 6" stroke="#2f7a62" stroke-width="2" fill="none"/></g>
+      <g class="float b" transform="translate(430 260)"><path d="M0 20C0 6 14-2 28 0c0 14-8 26-28 20z" fill="#bfe3d0"/><path d="M0 20L22 6" stroke="#2f7a62" stroke-width="2" fill="none"/></g>
+      <g class="float c" transform="translate(380 70)"><path d="M0 12q10-14 20 0q10-14 20 0" stroke="#4a3d7a" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+      <g class="float b" transform="translate(130 60)"><path d="M0 10q8-11 16 0q8-11 16 0" stroke="#4a3d7a" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/></g>
+    </svg>
+    <div class="breath" id="breath"><span id="bt">Breathe in…</span></div>
+  </div>
+</header>
+
+<section class="feel">
+  <h2>Struggling is human, and help is closer than it feels</h2>
+  <p>Many of us go through hard stretches. You don’t need to have the right words or a diagnosis to begin. Start wherever you are.</p>
+  <div class="chips">
+    <span>Anxiety</span><span>Low mood</span><span>Stress and burnout</span><span>Loneliness</span><span>Sleep trouble</span><span>Grief</span><span>Panic</span><span>Overthinking</span><span>Relationship worries</span>
+  </div>
+</section>
+
+<section class="paths" id="paths">
+  <h2>How would you like to begin?</h2>
+  <p>Choose what feels right today. You can always come back and try another.</p>
+  <div class="grid">
+
+    <a class="path p1" href="page1.html">
+      <div class="ico"><svg viewBox="0 0 48 48" fill="none" stroke="#4a3d7a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="32" height="24" rx="8"/><path d="M24 12V6"/><circle cx="24" cy="5" r="2"/><circle cx="18" cy="24" r="2" fill="#4a3d7a"/><circle cx="30" cy="24" r="2" fill="#4a3d7a"/><path d="M19 30q5 3 10 0"/></svg></div>
+      <div><h3>Chat with Manas</h3><p>Our friendly companion bot listens without judgment, any hour, and helps you sort through your thoughts.</p><span class="go">Start chatting <i>&rarr;</i></span></div>
+    </a>
+
+    <a class="path p2" href="page2.html">
+      <div class="ico"><svg viewBox="0 0 48 48" fill="none" stroke="#1f5c49" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h13a5 5 0 0 1 5 5v24a4 4 0 0 0-4-4H6z"/><path d="M42 10H29a5 5 0 0 0-5 5v24a4 4 0 0 1 4-4h14z"/><path d="M30 20h7M30 26h7"/></svg></div>
+      <div><h3>Know more about your problem</h3><p>Plain-language guides on common mental health concerns, what they feel like, and what can help.</p><span class="go">Start learning <i>&rarr;</i></span></div>
+    </a>
+
+    <a class="path p3" href="page3.html">
+      <div class="ico"><svg viewBox="0 0 48 48" fill="none" stroke="#b5432c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 41S7 31 7 19a9 9 0 0 1 17-4 9 9 0 0 1 17 4c0 12-17 22-17 22z"/><path d="M24 18v10M19 23h10"/></svg></div>
+      <div><h3>Get immediate help</h3><p>In crisis or feeling unsafe? Find helplines and emergency steps right away.</p><span class="go">Get help now <i>&rarr;</i></span></div>
+    </a>
+
+    <a class="path p4" href="page4.html">
+      <div class="ico"><svg viewBox="0 0 48 48" fill="none" stroke="#6b4a00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10h22a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H18l-8 7v-7H8a4 4 0 0 1-4-4V14a4 4 0 0 1 4-4z"/><path d="M38 20h2a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-2v6l-7-6h-8"/></svg></div>
+      <div><h3>Chat with someone</h3><p>Prefer a human? Talk with a trained listener or counsellor who understands.</p><span class="go">Talk to a person <i>&rarr;</i></span></div>
+    </a>
+
+  </div>
+</section>
+
+<section class="crisis" aria-label="Emergency support">
+  <div>
+    <h3>If you are in danger or thinking of ending your life</h3>
+    <p>Please reach out right now. In India, you can call Tele-MANAS at the number below, or your local emergency number. You deserve support.</p>
+  </div>
+  <a class="call" href="tel:14416">Call 14416</a>
+</section>
+
+<footer>
+  <p><strong>Mental Health Buddy</strong>: a gentle place to start.</p>
+  <p>This website offers information and peer-style support. It is not a substitute for professional diagnosis or treatment.</p>
+</footer>
 
 <script>
-/* ============ Living starfield ============ */
-const cv = document.getElementById('sky'), cx = cv.getContext('2d');
-let W,H,stars=[],shoot=null;
-function resize(){
-  const r = devicePixelRatio||1; W=innerWidth; H=innerHeight;
-  cv.width=W*r; cv.height=H*r; cx.setTransform(r,0,0,r,0,0);
-  stars = Array.from({length:Math.min(220,Math.floor(W*H/6500))},()=>({
-    x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.5+.3,
-    p:Math.random()*6.28, s:Math.random()*.02+.005, d:Math.random()*.15+.02
-  }));
-}
-function frame(){
-  cx.clearRect(0,0,W,H);
-  for(const s of stars){
-    s.p += s.s; s.y -= s.d*.1; if(s.y<0) s.y=H;
-    const a = .45 + .55*Math.sin(s.p);
-    cx.beginPath(); cx.arc(s.x,s.y,s.r,0,6.28);
-    cx.fillStyle = `rgba(200,225,255,${Math.max(.1,a)})`;
-    cx.shadowColor='#9cc8ff'; cx.shadowBlur = s.r*4; cx.fill();
-  }
-  cx.shadowBlur=0;
-  if(!shoot && Math.random()<.004) shoot={x:Math.random()*W*.8,y:Math.random()*H*.35,l:0};
-  if(shoot){
-    shoot.l+=9; shoot.x+=8; shoot.y+=4;
-    const g = cx.createLinearGradient(shoot.x,shoot.y,shoot.x-90,shoot.y-45);
-    g.addColorStop(0,'rgba(220,240,255,.9)'); g.addColorStop(1,'rgba(220,240,255,0)');
-    cx.strokeStyle=g; cx.lineWidth=1.6; cx.beginPath();
-    cx.moveTo(shoot.x,shoot.y); cx.lineTo(shoot.x-90,shoot.y-45); cx.stroke();
-    if(shoot.l>260) shoot=null;
-  }
-  requestAnimationFrame(frame);
-}
-addEventListener('resize',resize); resize(); frame();
+// gentle breathing prompt synced to the 8s ring animation
+(function(){
+  var el=document.getElementById('bt'); if(!el) return;
+  var inn=true;
+  function tick(){ el.style.opacity=0; setTimeout(function(){ el.textContent=inn?'Breathe in…':'Breathe out…'; el.style.opacity=1; inn=!inn; },500); }
+  setInterval(tick,4000);
+})();
 </script>
-
-<!-- Manas Bot: Botpress webchat embed -->
-<script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/11/10/17/20261110173617-QGNFEYIA.js" defer></script>
 </body>
 </html>
